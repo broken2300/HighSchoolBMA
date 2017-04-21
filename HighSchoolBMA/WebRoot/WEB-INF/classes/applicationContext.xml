@@ -22,6 +22,7 @@
     
 	<bean id="dataSource"
 		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
 			value="jdbc:mysql://localhost:3308/highschoolbma">
 		</property>
@@ -29,7 +30,7 @@
 		<property name="password" value="root"></property>
 	</bean>
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">		
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
@@ -52,4 +53,6 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	          
-	<tx:annotation-driven transaction-manager="transactionManager" /></beans>
+	    <!-- 使用annotation配置事务，注意，服务层一定要配置事务，否则报错：No Session found for current thread -->  
+    <tx:annotation-driven transaction-manager="transactionManager"/>  
+    </beans>

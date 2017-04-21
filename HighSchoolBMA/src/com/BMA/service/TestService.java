@@ -13,13 +13,16 @@ import com.BMA.model.TestModel;
 
 
 @Service
+@Transactional
 public class TestService  {
 	
-	@Resource(name="testDao")
+	@Resource
 	TestDao testDao;
 
     public TestModel findTest(){
-    	return testDao.findTest();	
+    	System.out.println(testDao.findTest());
+    	return testDao.findTest();
+    	
 	}
 
 }
