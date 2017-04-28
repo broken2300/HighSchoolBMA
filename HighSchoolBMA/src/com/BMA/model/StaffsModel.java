@@ -12,18 +12,18 @@ import javax.persistence.Table;
 import org.apache.struts2.components.Set;
 
 @Entity
-@Table( name = "teachers")
-public class TeachersModel {
+@Table( name = "staffs")
 
+public class StaffsModel {
 	@Id  
     @Column(name = "id")  
     @GeneratedValue(strategy = GenerationType.IDENTITY)  
 	int id ;
 	@Column(name = "firstname")
 	String firstname;
-	@Column (name = "lastname")
+	@Column(name = "lastname")
 	String lastname;
-	@Column (name = "birthday")
+	@Column (name ="birthday")
 	Date birthday;
 	@Column(name = "authority")
 	String authority;
@@ -57,5 +57,6 @@ public class TeachersModel {
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	
 }

@@ -1,7 +1,5 @@
 package com.BMA.model;
 
-import java.sql.Date;
-
 import javax.persistence.Column;  
 import javax.persistence.Entity;  
 import javax.persistence.GeneratedValue;  
@@ -37,6 +35,9 @@ public class StudentwithSubjectModel {
 	}
 	public int getId() {
 		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

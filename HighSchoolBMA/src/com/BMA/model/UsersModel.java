@@ -1,5 +1,4 @@
 package com.BMA.model;
-
 import java.sql.Date;
 
 import javax.persistence.Column;  
@@ -12,38 +11,32 @@ import javax.persistence.Table;
 import org.apache.struts2.components.Set;
 
 @Entity
-@Table( name = "staffs")
+@Table( name = "user")
+public class UsersModel {
 
-public class Staffs {
 	@Id  
     @Column(name = "id")  
     @GeneratedValue(strategy = GenerationType.IDENTITY)  
 	int id ;
-	@Column(name = "firstname")
-	String firstname;
-	@Column(name = "lastname")
-	String lastname;
-	@Column (name ="birthday")
-	Date birthday;
-	@Column(name = "authority")
+	@Column (name = "username")
+	String username;
+	@Column (name = "password")
+	String password;
+	@Column (name = "authority")
 	String authority;
-	public String getFirstname() {
-		return firstname;
+	@Column (name = "userid")
+	int userid;
+	public String getUsername() {
+		return username;
 	}
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public String getLastname() {
-		return lastname;
+	public String getPassword() {
+		return password;
 	}
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-	public Date getBirthday() {
-		return birthday;
-	}
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getAuthority() {
 		return authority;
@@ -51,9 +44,17 @@ public class Staffs {
 	public void setAuthority(String authority) {
 		this.authority = authority;
 	}
+	public int getUserid() {
+		return userid;
+	}
+	public void setUserid(int userid) {
+		this.userid = userid;
+	}
 	public int getId() {
 		return id;
 	}
-
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 }
