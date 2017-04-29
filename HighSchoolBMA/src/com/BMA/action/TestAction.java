@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Controller;
 
 import com.BMA.model.TestModel;
+import com.BMA.model.UserModel;
 import com.BMA.service.TestService;
 
 @Repository
@@ -25,10 +26,10 @@ public class TestAction {
 	
 	  @Action(value = "/testAction", results = { @Result(name = "SUCCESS", location = "/index.jsp") })
 	    public String index() {
-		TestModel testModel = testService.findTest();
+		UserModel userModel = testService.findTest();
 		HttpServletRequest request = ServletActionContext.getRequest();
 	    
-	    request.setAttribute("test", testModel);
+	    request.setAttribute("test", userModel);
 	    
 	    
 	    //other example
