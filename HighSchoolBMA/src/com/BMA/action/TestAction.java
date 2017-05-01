@@ -23,10 +23,11 @@ public class TestAction {
 	
 	@Resource
 	private TestService testService;
-	
+/*	
 	  @Action(value = "/testAction", results = { @Result(name = "SUCCESS", location = "/index.jsp") })
 	    public String index() {
 		UserModel userModel = testService.findTest();
+		
 		HttpServletRequest request = ServletActionContext.getRequest();
 	    
 	    request.setAttribute("test", userModel);
@@ -39,5 +40,5 @@ public class TestAction {
 	    //HttpServletResponse response = ServletActionContext.getResponse();
 		return "SUCCESS";
 	    }
-
+*/
 }

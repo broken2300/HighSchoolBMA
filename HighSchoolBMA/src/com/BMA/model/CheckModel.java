@@ -28,8 +28,8 @@ public class CheckModel {
 	String authority;
 	@Column(name = "checkdate")
 	Date checkdate;
-	@Column(name = "borrowdate")
-	Date borrowdate;
+	@Column(name = "returndate")
+	Date returndate;
 	
 	public int getUserid() {
 		return userid;
@@ -55,14 +55,18 @@ public class CheckModel {
 	public void setCheckdate(Date checkdate) {
 		this.checkdate = checkdate;
 	}
-	public Date getBorrowdate() {
-		return borrowdate;
-	}
-	public void setBorrowdate(Date borrowdate) {
-		this.borrowdate = borrowdate;
-	}
 	public int getId() {
 		return id;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public Date getReturndate() {
+		return returndate;
+	}
+	public void setReturndate(Date returndate) {
+		this.returndate = returndate;
+	}
+	
 	
 }

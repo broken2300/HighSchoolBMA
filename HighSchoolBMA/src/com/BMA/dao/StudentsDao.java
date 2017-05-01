@@ -12,24 +12,24 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import com.BMA.model.UserModel;
+import com.BMA.model.StudentsModel;
 
-@Repository("userDao")
-public class UserDao {
+@Repository("studentsDao")
+public class StudentsDao {
 		@Resource(name = "sessionFactory")
 		private SessionFactory sessionFactory;
 
 		
 		//return the first test info
-		//public UserModel findTest(){
+		//public StudentModel findTest(){
 			//Session session = sessionFactory.getCurrentSession();
-			//return (UserModel)session.get(UserModel.class, 1);
+			//return (StudentModel)session.get(StudentModel.class, 1);
 		//}
 		
-		public void addUser(UserModel user)  {  
+		public void addStudent(StudentsModel Student)  {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
-	        session.save(user);  
+	        session.save(Student);  
 	        try {  
 	            tc.commit();  
 	        } catch (Exception e) {  
@@ -38,11 +38,11 @@ public class UserDao {
 	        session.close();  
 	    }  
 	  
-	    public void delUser(int userId) {  
+	    public void delStudent(int StudentId) {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
-	        UserModel u = new UserModel();
-	        u.setUserid(userId);
+	        StudentsModel u = new StudentsModel();
+	        u.setId(StudentId);
 	        session.delete(u);  
 	        try {  
 	            tc.commit();  
@@ -52,10 +52,10 @@ public class UserDao {
 	        session.close();  
 	    }  
 	  
-	    public void updateUser(UserModel user) {  
+	    public void updateStudent(StudentsModel Student) {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
-	        session.update(user);  
+	        session.update(Student);  
 	        try {  
 	            tc.commit();  
 	        } catch (Exception e) {  
@@ -65,28 +65,35 @@ public class UserDao {
 	          
 	    }  
 	  
-	    //todo
-	    
-	    public List<UserModel> selectUserByString(String param, String value)  {  
-	        List<UserModel> users = new ArrayList<UserModel>();  
+	  /**
+	   *   
+	   * @param param : firstname or lastname
+	   * @param value
+	   * @return
+	   */
+	    public List<StudentsModel> selectStudentByString(String param, String value)  {  
+	        List<StudentsModel> Students = new ArrayList<StudentsModel>();  
 	        
         	Session session = sessionFactory.openSession();
     
         	Transaction tc = (Transaction) session.beginTransaction();  
 	        //tc.begin();
-	        String hqlString = " From UserModel u where u."+ param + "='" + value+"'";
+	        String hqlString = " From StudentsModel u where u."+ param + "='" + value+"'";
+	        if(param == null){
+	        	hqlString = "From StudentModel";
+	        }
 	        if(param == null){
 	        	hqlString = "From StudentModel";
 	        }
 	        if(session.createQuery(hqlString) != null){
 		        List list = session.createQuery(hqlString).list();  
 		        for (Iterator iterator = list.iterator(); iterator.hasNext();) {  
-		        	UserModel u = (UserModel) iterator.next();  
-		            users.add(u);  
+		        	StudentsModel u = (StudentsModel) iterator.next();  
+		            Students.add(u);  
 		        }  
 		        tc.commit();
 		        session.close();  
-		        return users;  
+		        return Students;  
 	        }
 	        else 
 	        {
@@ -96,77 +103,38 @@ public class UserDao {
 
 	    }  
 	    
-	    public List<UserModel> selectUserByInt(String param, int value)  {  
-	        List<UserModel> users = new ArrayList<UserModel>();  
-	        
-        	Session session = sessionFactory.openSession();
-        	//Transaction tc = (Transaction) session.beginTransaction();  
-	        
-	        String hqlString = "From UserModel u where u."+ param + "='" + value +"'";
-	        List list = session.createQuery(hqlString).list();  
-	        for (Iterator iterator = list.iterator(); iterator.hasNext();) {  
-	        	UserModel u = (UserModel) iterator.next();  
-	            users.add(u);  
-	        }  
-	       
-	        session.close();  
-	        return users;  
-	    }  
-	    
-	    public List<UserModel> selectUserByName(String value)  {  
-	        List<UserModel> users = new ArrayList<UserModel>();  
+	    public List<StudentsModel> selectStudentByName(String value)  {  
+	        List<StudentsModel> Students = new ArrayList<StudentsModel>();  
 	        
 			//Session session = sessionFactory.getCurrentSession();
 	        
 	        	Session session = sessionFactory.openSession();
 	        	Transaction tran=session.beginTransaction();
 	        
-	        List list = session.createQuery("From UserModel u where u.username like ?").setParameter(0, value).list();  
+	        List list = session.createQuery("From StudentsModel u where u.lastname like ?").setParameter(0, value).list();  
 	        for (Iterator iterator = list.iterator(); iterator.hasNext();) {  
-	        	UserModel u = (UserModel) iterator.next();  
-	            users.add(u);  
+	        	StudentsModel u = (StudentsModel) iterator.next();  
+	            Students.add(u);  
 	        } 
 	        tran.commit();
 	        session.close();
 
-	        return users;  
+	        return Students;  
 	    }  
 	  
-	    public UserModel getUserByUserId(int userId)  {  
+	    public StudentsModel getStudentByStudentId(int StudentId)  {  
         	Session session = sessionFactory.openSession();
         	Transaction tc = (Transaction) session.beginTransaction();  
 	        //tc.begin();
 	        //load 是说明数据库中一定存在这条记录，没有则报出：ObjectNotFoundException  
 	        //get 如果查不到记录，返回的是一个null  
-	        UserModel user = (UserModel)session.get(UserModel.class, userId);  
+        	StudentsModel Student = (StudentsModel)session.get(StudentsModel.class, StudentId);  
 	        try {  
 	            tc.commit();  
 	        } catch (Exception e) {  
 	            e.printStackTrace();  
 	        }  
 	        session.close();  
-	        return user;  
+	        return Student;  
 	    }  
-	  
-	    public boolean isExitByName(String userName)  {  
-        	Session session = sessionFactory.openSession();
-        	Transaction tc = (Transaction) session.beginTransaction();  
-	        List user = (List)session.createQuery("From UserModel u where u.userName=:userName").setString("userName", userName).list();  
-	        if(user.size()>0){  
-	            try {  
-	                tc.commit();  
-	            } catch (Exception e) {  
-	                e.printStackTrace();  
-	            }  
-	            session.close();  
-	            return true;  
-	        }  
-	        try {  
-	            tc.commit();  
-	        } catch (Exception e) {  
-	            e.printStackTrace();  
-	        }  
-	        session.close();  
-	        return false;  
-	    }
 }

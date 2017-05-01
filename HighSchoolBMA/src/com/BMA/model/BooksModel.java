@@ -70,6 +70,10 @@ public class BooksModel {
 	public void setEdition(int edition) {
 		this.edition = edition;
 	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	
 }
