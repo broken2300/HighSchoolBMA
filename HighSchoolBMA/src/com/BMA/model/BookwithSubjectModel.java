@@ -27,6 +27,9 @@ public class BookwithSubjectModel {
 	public int getBookid() {
 		return bookid;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public void setBookid(int bookid) {
 		this.bookid = bookid;
 	}
