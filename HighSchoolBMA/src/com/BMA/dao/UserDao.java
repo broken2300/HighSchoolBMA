@@ -26,16 +26,17 @@ public class UserDao {
 			//return (UserModel)session.get(UserModel.class, 1);
 		//}
 		
-		public void addUser(UserModel user)  {  
+		public int addUser(UserModel user)  {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
-	        session.save(user);  
+	        int i =(Integer) session.save(user);  
 	        try {  
 	            tc.commit();  
 	        } catch (Exception e) {  
 	            e.printStackTrace();  
 	        }   
 	        session.close();  
+	        return i;
 	    }  
 	  
 	    public void delUser(int userId) {  

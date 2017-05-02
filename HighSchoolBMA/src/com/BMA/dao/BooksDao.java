@@ -115,9 +115,14 @@ public class BooksDao {
 			//Session session = sessionFactory.getCurrentSession();
 	        
 	        	Session session = sessionFactory.openSession();
+	        	List list;
 	        	Transaction tran=session.beginTransaction();
-	        
-	        List list = session.createQuery("From BooksModel u where u.name like ?").setParameter(0, value).list();  
+	        if(value.equals("ALL")){
+	        	list = session.createQuery("From BooksModel").list();
+	        }
+	        else {
+	        	list = session.createQuery("From BooksModel u where u.name like ?").setParameter(0, value).list();  
+			}
 	        for (Iterator iterator = list.iterator(); iterator.hasNext();) {  
 	        	BooksModel u = (BooksModel) iterator.next();  
 	            Books.add(u);  

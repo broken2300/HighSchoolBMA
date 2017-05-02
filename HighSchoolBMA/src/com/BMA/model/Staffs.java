@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;  
 
 import org.apache.struts2.components.Set;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table( name = "staffs")
@@ -17,7 +18,8 @@ import org.apache.struts2.components.Set;
 public class Staffs {
 	@Id  
     @Column(name = "id")  
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+	@GenericGenerator(name = "idGenerator", strategy = "assigned")
+	@GeneratedValue(generator = "idGenerator")
 	int id ;
 	@Column(name = "firstname")
 	String firstname;

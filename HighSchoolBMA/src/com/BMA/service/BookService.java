@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.aspectj.weaver.ast.HasAnnotation;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.dao.support.DaoSupport;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import com.BMA.dao.BooksDao;
 import com.BMA.dao.CheckDao;
 import com.BMA.dao.UserDao;
 import com.BMA.model.BooksModel;
-import com.BMA.model.CheckModel;
+import com.BMA.model.LogModel;
 import com.BMA.model.UserModel;
 
 @Service
@@ -39,8 +40,9 @@ public class BookService {
 	 * 		   -2: book has been check out
 	 */
 	public int checkoutSingle(BooksModel book, UserModel user){
-		CheckModel checkModel = checkDao.selectCheckByInt("bookid", book.getId()).get(0);
-		if(checkModel == null){
+		List<LogModel> checkModelList = checkDao.selectCheckByInt("bookid", book.getId());
+		if(checkModelList.size() ==0){
+			LogModel checkModel = new LogModel();
 			checkModel.setAuthority(user.getAuthority());
 			checkModel.setBookid(book.getId());
 			checkModel.setUserid(user.getUserid());
@@ -65,12 +67,13 @@ public class BookService {
 	 * @return -1: erorr
 	 * 		   -2: book has been check out
 	 */		   
-	public int checkouSingle(List<BooksModel> books, UserModel user){
-		List<CheckModel> checkList = new ArrayList<CheckModel>();
+	public int checkoutBooks(List<BooksModel> books, UserModel user){
+		List<LogModel> checkList = new ArrayList<LogModel>();
 		
 		for (BooksModel book : books) {
-			CheckModel checkModel = checkDao.selectCheckByInt("bookid", book.getId()).get(0);
-			if(checkModel == null){
+			List<LogModel> checkModelList = checkDao.selectCheckByInt("bookid", book.getId());
+			if(checkModelList.size() == 0){
+				LogModel checkModel = new LogModel();
 				checkModel.setAuthority(user.getAuthority());
 				checkModel.setBookid(book.getId());
 				checkModel.setUserid(user.getUserid());
@@ -103,7 +106,7 @@ public class BookService {
 	
 	//return
 	public int returnBook(BooksModel book){
-		CheckModel checkModel = checkDao.selectCheckByInt("bookid", book.getId()).get(0);
+		LogModel checkModel = checkDao.selectCheckByInt("bookid", book.getId()).get(0);
 		if(checkModel == null){
 			return -1;
 		}
@@ -115,14 +118,14 @@ public class BookService {
 	}
 	
 	//checkList
-	public List<CheckModel> getAllcheckList(){
+	public List<LogModel> getAllcheckList(){
 		return checkDao.selectCheckByInt(null, 0);
 	}
 	
-	public List<CheckModel> getNoReturnList(){
-		List<CheckModel> list = checkDao.selectCheckByInt(null, 0);
-		List<CheckModel> returnList = new ArrayList<CheckModel>();
-		for (CheckModel checkModel : list) {
+	public List<LogModel> getNoReturnList(){
+		List<LogModel> list = checkDao.selectCheckByInt(null, 0);
+		List<LogModel> returnList = new ArrayList<LogModel>();
+		for (LogModel checkModel : list) {
 			if(checkModel.getReturndate() == null){
 				returnList.add(checkModel);
 			}
@@ -130,10 +133,10 @@ public class BookService {
 		return returnList;
 	}
 	
-	public List<CheckModel> getReturnedList(){
-		List<CheckModel> list = checkDao.selectCheckByInt(null, 0);
-		List<CheckModel> returnList = new ArrayList<CheckModel>();
-		for (CheckModel checkModel : list) {
+	public List<LogModel> getReturnedList(){
+		List<LogModel> list = checkDao.selectCheckByInt(null, 0);
+		List<LogModel> returnList = new ArrayList<LogModel>();
+		for (LogModel checkModel : list) {
 			if(checkModel.getReturndate() != null){
 				returnList.add(checkModel);
 			}
@@ -141,5 +144,8 @@ public class BookService {
 		return returnList;
 	}
 	
+	public BooksModel getBooksModel(int id){
+		return booksDao.getBookByBookId(id);
+	}
 
 }

@@ -167,7 +167,7 @@ public class UserService  {
 	//Find no authorize
 	public List<StudentsModel> FindStudentNoAuthorized(){
 		try {
-			return studentsDao.selectStudentByString("authority", null);
+			return studentsDao.selectStudentByString("authority", "NO");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -175,7 +175,7 @@ public class UserService  {
 	}
 	public List<TeachersModel> FindTeacher(){
 		try {
-			return teachersDao.selectTeacherByString("authority",null);
+			return teachersDao.selectTeacherByString("authority","NO");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -183,7 +183,7 @@ public class UserService  {
 	}
 	public List<Staffs> findStaffs(){
 		try {
-			return staffsDao.selectStaffByString("authority",null);
+			return staffsDao.selectStaffByString("authority","NO");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -219,20 +219,21 @@ public class UserService  {
 		}
 	}
 	public StudentsModel getStudentByUser(UserModel user){
-		return studentsDao.getStudentByStudentId(user.getUserid());
+		return studentsDao.getStudentByStudentId(user.getId());
 	}
 	public TeachersModel getTeacherByUser(UserModel user){
-		return teachersDao.getTeacherByTeacherId(user.getUserid());
+		return teachersDao.getTeacherByTeacherId(user.getId());
 	}
 	public Staffs getStaffByUser(UserModel user){
-		return staffsDao.getStaffByStaffId(user.getUserid());
+		return staffsDao.getStaffByStaffId(user.getId());
 	}
 	
 	//add User
 	public int addUser(UserModel user){
+		int i;
 		try {
-			userDao.addUser(user);
-			return 0;
+			i = userDao.addUser(user);
+			return i;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;

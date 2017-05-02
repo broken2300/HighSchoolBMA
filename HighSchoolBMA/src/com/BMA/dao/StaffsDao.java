@@ -75,7 +75,7 @@ public class StaffsDao {
 	        //tc.begin();
 	        String hqlString = " From Staffs u where u."+ param + "='" + value+"'";
 	        if(param == null){
-	        	hqlString = "From StudentModel";
+	        	hqlString = "From Staffs";
 	        }
 	        if(session.createQuery(hqlString) != null){
 		        List list = session.createQuery(hqlString).list();  

@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import com.BMA.model.CheckModel;;
+import com.BMA.model.LogModel;;;
 
 @Repository("checkDao")
 public class CheckDao {
@@ -27,7 +27,7 @@ public class CheckDao {
 			//return (CheckModel)session.get(CheckModel.class, 1);
 		//}
 		
-		public void addCheck(CheckModel Check)  {  
+		public void addCheck(LogModel Check)  {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
 	        session.save(Check);  
@@ -42,7 +42,7 @@ public class CheckDao {
 	    public void delCheck(int CheckId) {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
-	        CheckModel u = new CheckModel();
+	        LogModel u = new LogModel();
 	        u.setId(CheckId);
 	        session.delete(u);  
 	        try {  
@@ -53,7 +53,7 @@ public class CheckDao {
 	        session.close();  
 	    }  
 	  
-	    public void updateCheck(CheckModel Check) {  
+	    public void updateCheck(LogModel Check) {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
 	        session.update(Check);  
@@ -72,19 +72,24 @@ public class CheckDao {
 	     * @param value
 	     * @return
 	     */
-	    public List<CheckModel> selectCheckByInt(String param, int value)  {  
-	        List<CheckModel> Checks = new ArrayList<CheckModel>();  
+	    public List<LogModel> selectCheckByInt(String param, int value)  {  
+	        List<LogModel> Checks = new ArrayList<LogModel>();  
 	        
         	Session session = sessionFactory.openSession();
+        	List list ;
         	//Transaction tc = (Transaction) session.beginTransaction();  
 	        
-	        String hqlString = "From CheckModel u where u."+ param + "='" + value +"'";
+	        String hqlString;
 	        if(param == null){
-	        	hqlString = "From CheckModel";
+	        	hqlString = "From LogModel";
+	        	list =  session.createQuery(hqlString).list();
 	        }
-	        List list = session.createQuery(hqlString).list();  
+	        else {
+	        	hqlString = "From LogModel where "+ param + "=?";
+		        list = session.createQuery(hqlString).setParameter(0, value).list();
+			}
 	        for (Iterator iterator = list.iterator(); iterator.hasNext();) {  
-	        	CheckModel u = (CheckModel) iterator.next();  
+	        	LogModel u = (LogModel) iterator.next();  
 	            Checks.add(u);  
 	        }  
 	       
@@ -92,13 +97,13 @@ public class CheckDao {
 	        return Checks;  
 	    }  
 	  
-	    public CheckModel getCheckByCheckId(int CheckId)  {  
+	    public LogModel getCheckByCheckId(int CheckId)  {  
         	Session session = sessionFactory.openSession();
         	Transaction tc = (Transaction) session.beginTransaction();  
 	        //tc.begin();
 	        //load 是说明数据库中一定存在这条记录，没有则报出：ObjectNotFoundException  
 	        //get 如果查不到记录，返回的是一个null  
-        	CheckModel Check = (CheckModel)session.get(CheckModel.class, CheckId);  
+        	LogModel Check = (LogModel)session.get(LogModel.class, CheckId);  
 	        try {  
 	            tc.commit();  
 	        } catch (Exception e) {  
