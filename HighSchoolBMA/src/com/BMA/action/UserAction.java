@@ -1,13 +1,16 @@
 package com.BMA.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
+import org.apache.commons.validator.Msg;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -17,21 +20,29 @@ import org.springframework.stereotype.Controller;
 
 import com.BMA.dao.StaffsDao;
 import com.BMA.model.BooksModel;
+import com.BMA.model.BookwithSubjectModel;
+import com.BMA.model.LogModel;
 import com.BMA.model.Staffs;
 import com.BMA.model.StudentsModel;
+import com.BMA.model.SubjectsModel;
 import com.BMA.model.TeachersModel;
+import com.BMA.model.TeacherwithSubjectModel;
 import com.BMA.model.TestModel;
 import com.BMA.model.UserModel;
 import com.BMA.service.BookService;
+import com.BMA.service.SubjectService;
 import com.BMA.service.TestService;
 import com.BMA.service.UserService;
+import com.BMA.view.BookAndLogModel;
 import com.opensymphony.xwork2.ActionSupport;
 
 import freemarker.core.ReturnInstruction.Return;
 
 
 @Action(value = "UserAction", results = {
-		@Result(name = "operationSuccess", location = "/main.jsp"),
+		@Result(name = "index", location = "/index.jsp"),
+		@Result(name = "operationSuccess", location = "/staffMain.jsp"),
+		@Result(name = "operationSuccess2", location = "/userMain.jsp"),
 		
 		@Result(name = "loginFailed", location = "/loginFailed.jsp"),
 		@Result(name = "registerSuccess", location = "/registerSuccess.jsp"),
@@ -44,9 +55,16 @@ import freemarker.core.ReturnInstruction.Return;
 		@Result(name = "studentList", location = "/studentList.jsp"),
 		@Result(name = "teacherList", location = "/teacherList.jsp"),
 
+		@Result(name = "bookLog", location = "/bookLog.jsp"),
+
 		@Result(name = "bookList", location = "/bookList.jsp"),
 		@Result(name = "checkSuccess", location = "/checkSuccess.jsp"),
 		@Result(name = "checkFailed", location = "/checkFailed.jsp"),
+		@Result(name = "mybookList", location = "/mybookList.jsp"),
+		@Result(name = "returnSuccess", location = "/returnSuccess.jsp"),
+		@Result(name = "checkRefer", location = "/checkRefer.jsp"),
+		@Result(name = "setSubject", location = "/setSubject.jsp"),
+
 		
 }
 )
@@ -58,6 +76,8 @@ public class UserAction extends ActionSupport{
 	private UserService userService;
 	@Resource
 	private BookService bookService;
+	@Resource
+	private SubjectService subjectService;
 	
 	//param
 	List<BooksModel> booksList;
@@ -67,30 +87,56 @@ public class UserAction extends ActionSupport{
 	String password;
 	String firstname;
 	String lastname;
-	String authority;
-	
+	String authority;	
 	String paramString;
 	int id;
+	String name;
+	String author;
+	
 
 	public String login(){
 		boolean flag = false;
 		System.out.println(user.getUsername());
 		UserModel userModel = userService.getUserByUsername(user.getUsername());
 		//check authorization
+		String authority = new String();
 		
 		Staffs staffs = new Staffs();
+		StudentsModel student = new StudentsModel();
+		TeachersModel teacher = new TeachersModel();
 		if(userModel.getAuthority().equals("staff")){
 			staffs = userService.getStaffByUser(userModel);
+			authority = staffs.getAuthority();
+			
 		}
-		//TODO :bug
-		if(userModel != null && user.getPassword().equals(userModel.getPassword()) ){
+		if(userModel.getAuthority().equals("student")){
+			student = userService.getStudentByUser(userModel);
+			authority = student.getAuthority();			
+		}
+		if(userModel.getAuthority().equals("teacher")){
+			teacher = userService.getTeacherByUser(userModel);
+			authority = teacher.getAuthority();
+		}
+		if(userModel != null && user.getPassword().equals(userModel.getPassword()) && !authority.equals("NO")){
 			ServletActionContext.getRequest().getSession()
 			.setAttribute("user", userModel);
-			return "operationSuccess";
+			if(authority.equals("staff")){
+
+				return "operationSuccess";
+			}
+			else {
+				return "operationSuccess2";
+			}
 		}
 		else {
 			return "loginFailed";
 		}
+	}
+	
+	public String Logout(){
+		ServletActionContext.getRequest().getSession()
+		.setAttribute("user", null);
+		return "index";
 	}
 	
 	public String register(){
@@ -132,6 +178,16 @@ public class UserAction extends ActionSupport{
 			e.printStackTrace();
 			return "regitserFailed";
 		}		
+	}
+	
+
+	//Book log
+	public String bookLog(){
+		List<LogModel> list = bookService.getAllcheckList();
+		ServletActionContext.getRequest().getSession()
+		.setAttribute("list", list);
+		return "bookLog";
+		
 	}
 	
 	//Authorization
@@ -184,7 +240,7 @@ public class UserAction extends ActionSupport{
 		}
 	}
 	
-	public String authorizationTeacher(int id){
+	public String authorizationTeacher(){
 		try {
 			userService.AuthorizeTeacher(id);
 			return "operationSuccess";
@@ -193,7 +249,7 @@ public class UserAction extends ActionSupport{
 			return "error";
 		}
 	}
-	public String authorizationStudent(int id){
+	public String authorizationStudent(){
 		try {
 			userService.AuthorizeStudent(id);
 			return "operationSuccess";
@@ -206,14 +262,14 @@ public class UserAction extends ActionSupport{
 	//books
 		//find book
 	public String getbooksByAuthor(){
-		List<BooksModel> list = bookService.findBooksByAuthor(paramString);
+		List<BooksModel> list = bookService.findBooksByAuthor(author);
 		ServletActionContext.getRequest().getSession()
 		.setAttribute("list", list);
 		return "bookList";
 	}
 	
 	public String getbooksByName(){
-		List<BooksModel> list = bookService.findBooksByName(paramString);
+		List<BooksModel> list = bookService.findBooksByName(name);
 		ServletActionContext.getRequest().getSession()
 		.setAttribute("list", list);
 		return "bookList";
@@ -230,14 +286,137 @@ public class UserAction extends ActionSupport{
 	public String checkout(){
 		BooksModel booksModel = bookService.getBooksModel(id);
 		UserModel tempUser = (UserModel) ServletActionContext.getRequest().getSession().getAttribute("user");
-		if(bookService.checkoutSingle(booksModel, tempUser)== 0){
+		int i =bookService.checkoutSingle(booksModel, tempUser);
+		if(i== 0){
 			return "checkSuccess";			
 		}
 		else{
+			String msgString = new String();
+			if(i == -1)
+				msgString = "data Error";
+			if(i == -2)
+				msgString = "Book has been check out";
+			ServletActionContext.getRequest().getSession()
+			.setAttribute("msg", msgString);
 			return "checkFailed";
 		}
 	}
 	
+	//return
+	public String myBookList(){
+		UserModel tempUser = (UserModel) ServletActionContext.getRequest().getSession().getAttribute("user");
+		
+		List<BookAndLogModel> list = new ArrayList<BookAndLogModel>();
+
+		List<LogModel> logList = bookService.getUserCheckList(tempUser.getId());
+		
+		List<BooksModel> bookList = new ArrayList<BooksModel>();
+		
+		for (LogModel logModel : logList) {
+			bookList.add(bookService.getBooksModel(logModel.getBookid()));
+		}
+		
+		for( int i = 0; i<logList.size(); i++){
+			BookAndLogModel model = new BookAndLogModel();
+			model.setBooksModel(bookList.get(i));
+			model.setLogModel(logList.get(i));
+			list.add(model);
+		}
+		
+		//ServletActionContext.getRequest().getSession()
+		//.setAttribute("list", logList);
+		ServletActionContext.getRequest().getSession()
+		.setAttribute("list", list);
+		return "mybookList";
+	}
+	public String Returnbook(){
+		LogModel logModel = bookService.getLogModel(id);
+		if(logModel !=null){
+			logModel.setReturndate(new java.sql.Date(new java.util.Date().getTime()));
+			bookService.updateLog(logModel);
+			return "returnSuccess";
+		}
+		else{
+			return "error";
+		}
+	}
+	
+	//Reference
+	public String checkRefer(){
+		try {
+			UserModel tempUser = (UserModel) ServletActionContext.getRequest().getSession().getAttribute("user");
+			List<SubjectsModel> list1 = new ArrayList<SubjectsModel>();
+			List<BooksModel> list2 = new ArrayList<BooksModel>();
+			String author = tempUser.getAuthority();
+			if(author.equals("student")){
+				StudentsModel student = userService.getStudentByUser(tempUser);
+				list1 = subjectService.getSubjectByStudent(student);
+				for (SubjectsModel subjectsModel : list1) {
+					list2= subjectService.getBooksBySubject(subjectsModel);
+				}
+			}
+			else if(author.equals("teacher")){
+				TeachersModel teacher = userService.getTeacherByUser(tempUser);
+				list1 =subjectService.getSubjectByTeacher(teacher);
+				for (SubjectsModel subjectsModel : list1) {
+					list2= subjectService.getBooksBySubject(subjectsModel);
+				}
+			}
+			List<LogModel> logList = bookService.getUserCheckList(tempUser.getId());
+			ServletActionContext.getRequest().getSession()
+			.setAttribute("list1", list1);
+			ServletActionContext.getRequest().getSession()
+			.setAttribute("list2", list2);
+			
+			return "checkRefer";
+			
+		} catch (Exception e) {
+			return "error";
+		}
+		
+	}
+	public String setRefer(){
+		UserModel tempUser = (UserModel) ServletActionContext.getRequest().getSession().getAttribute("user");
+		TeachersModel teacher = userService.getTeacherByUser(tempUser);
+		BooksModel book = bookService.getBooksModel(id);
+		if(tempUser.getAuthority().equals("teacher")){
+			SubjectsModel subjectsModel = subjectService.getSubjectByTeacher(teacher).get(0);
+			BookwithSubjectModel bsModel = new BookwithSubjectModel();
+			bsModel.setBookid(id);
+			bsModel.setSubjectid(subjectsModel.getId());
+			subjectService.addBs(bsModel);
+			
+			return "operationSuccess2";
+			
+		}
+		else {
+			return "noAuthor";
+		}
+	}
+	 
+	public String setSubject(){
+		UserModel tempUser = (UserModel) ServletActionContext.getRequest().getSession().getAttribute("user");
+		TeachersModel teacher = userService.getTeacherByUser(tempUser);
+		if(tempUser.getAuthority().equals("teacher")){
+			return "setSubject";
+		}
+		else
+			return "noAuthor";		
+	}
+	
+	public String submitSubject(){
+		UserModel tempUser = (UserModel) ServletActionContext.getRequest().getSession().getAttribute("user");
+		TeachersModel teacher = userService.getTeacherByUser(tempUser);
+		SubjectsModel subjectsModel = new SubjectsModel();
+		subjectsModel.setName(paramString);
+		int i = subjectService.addSubject(subjectsModel);
+		
+		TeacherwithSubjectModel tsModel = new TeacherwithSubjectModel();
+		tsModel.setSubjectid(i);
+		tsModel.setTeacherid(tempUser.getId());
+		subjectService.addTs(tsModel);
+		return "operationSuccess2";
+	}
 	public String index() {
 		
 		return "loginFailed";
@@ -335,6 +514,30 @@ public class UserAction extends ActionSupport{
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getParamString() {
+		return paramString;
+	}
+
+	public void setParamString(String paramString) {
+		this.paramString = paramString;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 	
 

@@ -75,7 +75,7 @@ public class BookswithSubjectDao {
         	Session session = sessionFactory.openSession();
         	//Transaction tc = (Transaction) session.beginTransaction();  
 	        
-	        String hqlString = "From BookwithSubjectModel u where u."+ param + "=бо" + value +"'";
+	        String hqlString = "From BookwithSubjectModel u where u."+ param + "='" + value +"'";
 	        List list = session.createQuery(hqlString).list();  
 	        for (Iterator iterator = list.iterator(); iterator.hasNext();) {  
 	        	BookwithSubjectModel u = (BookwithSubjectModel) iterator.next();  

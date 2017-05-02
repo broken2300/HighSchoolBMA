@@ -45,7 +45,7 @@ public class BookService {
 			LogModel checkModel = new LogModel();
 			checkModel.setAuthority(user.getAuthority());
 			checkModel.setBookid(book.getId());
-			checkModel.setUserid(user.getUserid());
+			checkModel.setUserid(user.getId());
 			checkModel.setReturndate(null);
 			checkModel.setCheckdate(new java.sql.Date(new java.util.Date().getTime()));
 			try {
@@ -142,6 +142,26 @@ public class BookService {
 			}
 		}
 		return returnList;
+	}
+	
+	public List<LogModel> getUserCheckList(int id){
+		List<LogModel> list = checkDao.selectCheckByInt("userid", id);
+		List<LogModel> returnList = new ArrayList<LogModel>();
+		for (LogModel checkModel : list) {
+			if(checkModel.getReturndate() == null){
+				returnList.add(checkModel);
+			}
+		}
+		return returnList;
+	}
+	
+	public LogModel getLogModel(int id){
+		LogModel logModel = checkDao.getCheckByCheckId(id);
+		return logModel;
+	}
+	
+	public void updateLog(LogModel logModel){
+		checkDao.updateCheck(logModel);
 	}
 	
 	public BooksModel getBooksModel(int id){

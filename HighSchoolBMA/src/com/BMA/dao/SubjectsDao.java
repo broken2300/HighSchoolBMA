@@ -26,16 +26,17 @@ public class SubjectsDao {
 			//return (SubjectModel)session.get(SubjectModel.class, 1);
 		//}
 		
-		public void addSubject(SubjectsModel Subject)  {  
+		public int addSubject(SubjectsModel Subject)  {  
         	Session session = sessionFactory.openSession();
 	        Transaction tc = (Transaction) session.beginTransaction();  
-	        session.save(Subject);  
+	        int i = (Integer) session.save(Subject);  
 	        try {  
 	            tc.commit();  
 	        } catch (Exception e) {  
 	            e.printStackTrace();  
 	        }   
 	        session.close();  
+	        return i;
 	    }  
 	  
 	    public void delSubject(int SubjectId) {  

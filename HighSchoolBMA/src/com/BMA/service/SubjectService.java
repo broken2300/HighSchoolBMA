@@ -38,11 +38,33 @@ public class SubjectService {
 	//add
 	public int addSubject(SubjectsModel subjectsModel){
 		try {
-			subjectsDao.addSubject(subjectsModel);
+			return subjectsDao.addSubject(subjectsModel);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	public int addBs(BookwithSubjectModel bookwithSubjectModel){
+		try {
+			bookswithSubjectDao.addBook(bookwithSubjectModel);
 			return 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;
+			// TODO: handle exception
+		}
+	}
+	
+	public int addTs(TeacherwithSubjectModel bookwithSubjectModel){
+		try {
+			teacherwithSubjectDao.addTs(bookwithSubjectModel);
+			return 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+			// TODO: handle exception
 		}
 	}
 	

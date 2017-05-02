@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import org.apache.struts2.components.Set;
 
 @Entity
-@Table( name = "studentwthsubject")
+@Table( name = "studentwithsubject")
 public class StudentwithSubjectModel {
 
 	@Id  
