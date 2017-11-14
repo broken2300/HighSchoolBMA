@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="ISO-8859-1"%>
+<%@taglib prefix="s" uri="/struts-tags"%> 
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -21,8 +22,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    This is my JSP page. <br>
-    ${test.name}
-   <s:property value="%{test.name}"/>
+    Welcome to HighSchool Book Management Application! <br>
+    Please Login
+    <s:form action="UserAction!login">  
+              <s:textfield name="user.username" label="username"></s:textfield>  
+              <s:password name="user.password" label="password"></s:password>>  
+              <s:submit value="login"></s:submit>  
+         </s:form>  
+              <a href="register.jsp"><input type="button"  value="register"/></a> 
+              <a href="UserAction!index"><input type="button"  value="test"/></a> 
+
   </body>
 </html>

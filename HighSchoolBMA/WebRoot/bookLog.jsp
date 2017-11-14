@@ -1,0 +1,50 @@
+<%@ page language="java" import="java.util.*" pageEncoding="ISO-8859-1"%>
+<%@taglib prefix="s" uri="/struts-tags"%> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'index.jsp' starting page</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+  </head>
+  
+  <body>
+    Welcome to HighSchool Book Management Application! <br>
+    Log List<br>
+    
+     <a href="<%=basePath%>staffMain.jsp"><input type="button"  value="Index"/></a>   
+    <a href="<%=basePath%>UserAction!Logout"><input type="button"  value="Logout"/></a>
+     <table border="1">
+   <tr>
+    <th>id</th><th>userid</th><th>bookid</th><th>Authority</th><th>returnDate</th><th>checkDate</th>>
+   </tr> 
+      <c:forEach items="${list}" var="book">
+       <tr>
+        <td>${book.id }</td>
+        <td>${book.userid}</td>
+        <td>${book.bookid}</td>
+        <td>${book.authority}</td>
+                <td>${book.returndate}</td>
+                <td>${book.checkdate}</td>
+        
+      </c:forEach>
+
+
+</table>
+
+  </body>
+</html>

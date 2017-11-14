@@ -1,0 +1,5 @@
+
+*.class
+*.class
+HighSchoolBMA/WebRoot/WEB-INF/classes/com/BMA/action/TestAction.class
+HighSchoolBMA/WebRoot/WEB-INF/classes/com/BMA/service/TestService.class
